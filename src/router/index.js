@@ -1,9 +1,12 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
-import Admin from '../views/Admin.vue';
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Home from '../views/Home.vue'
+import Admin from '../views/Admin.vue'
+import Overview from '../views/Overview.vue'
+import Products from '../views/Products.vue'
+import Orders from '../views/Orders.vue'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 const routes = [
   {
@@ -14,7 +17,21 @@ const routes = [
   {
     path: '/admin',
     name: 'Admin',
-    component: Admin
+    component: Admin,
+    children: [
+      {
+        path: 'overview',
+        component: Overview
+      },
+      {
+        path: 'products',
+        component: Products
+      },
+      {
+        path: 'orders',
+        component: Orders
+      }
+    ]
   },
   {
     path: '/about',
@@ -25,12 +42,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/About.vue')
   }
-];
+]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
-});
+})
 
-export default router;
+export default router

@@ -1,9 +1,16 @@
 <template>
-  <div class="home"></div>
+  <div class="home">
+    <Navbar></Navbar>
+    <Login></Login>
+  </div>
 </template>
 
 <script>
+import Login from '@/components/Login'
 export default {
-  name: 'Home'
-};
+  name: 'Home',
+  components: {
+    Login
+  }
+}
 </script>

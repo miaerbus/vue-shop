@@ -16,7 +16,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <router-link to="/home" class="nav-link">Home</router-link>
+          <router-link to="/" class="nav-link">Home</router-link>
         </li>
         <li class="nav-item">
           <router-link to="/about" class="nav-link">About</router-link>
@@ -29,9 +29,14 @@
           placeholder="Search"
           aria-label="Search"
         />
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-          Search
-        </button>
+        <a
+          class="btn btn-outline-success my-2 my-sm-0"
+          type="submit"
+          data-toggle="modal"
+          data-target="#modal"
+        >
+          Get Started
+        </a>
       </form>
     </div>
   </nav>
@@ -43,7 +48,7 @@ export default {
   props: {
     msg: String
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
