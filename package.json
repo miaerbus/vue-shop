@@ -10,10 +10,12 @@
   "dependencies": {
     "bootstrap": "^4.4.1",
     "core-js": "^3.6.4",
+    "dotenv": "^8.2.0",
     "firebase": "^7.9.3",
     "jquery": "^3.4.1",
     "popper.js": "^1.16.1",
     "vue": "^2.6.11",
+    "vue-firestore": "^0.3.30",
     "vue-router": "^3.1.5"
   },
   "devDependencies": {

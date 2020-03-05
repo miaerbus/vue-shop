@@ -85,7 +85,7 @@
                   placeholder="Password"
                 />
               </div>
-              <button class="btn btn-primary" @click="signup">
+              <button class="btn btn-primary" @click="signup()">
                 Signup
               </button>
             </div>
@@ -99,6 +99,7 @@
               <div class="form-group">
                 <label for="exampleInputEmail2">Email address</label>
                 <input
+                  v-model="email"
                   type="email"
                   class="form-control"
                   id="exampleInputEmail"
@@ -108,13 +109,15 @@
               <div class="form-group">
                 <label for="exampleInputPassword2">Password</label>
                 <input
+                  v-model="password"
                   type="password"
                   class="form-control"
                   id="exampleInputPassword2"
                   placeholder="Password"
+                  @keyup.enter="login()"
                 />
               </div>
-              <button class="btn btn-primary">Login</button>
+              <button class="btn btn-primary" @click="login()">Login</button>
             </div>
           </div>
         </div>
@@ -146,6 +149,21 @@ export default {
           // Handle Errors here.
           //   var errorCode = error.code
           //   var errorMessage = error.message
+          // ...
+          console.log(error)
+        })
+    },
+
+    login() {
+      fb.auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(() => {
+          this.$router.replace('admin')
+        })
+        .catch(function(error) {
+          // Handle Errors here.
+          // var errorCode = error.code
+          // var errorMessage = error.message
           // ...
           console.log(error)
         })
