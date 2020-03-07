@@ -2,7 +2,6 @@
   <div
     class="modal fade"
     id="modal"
-    ref="modal"
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalCenterTitle"
