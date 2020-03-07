@@ -25,13 +25,13 @@
             <tr>
               <th>Name</th>
               <th>Price</th>
-              <th>Description</th>
+              <!-- <th>Description</th> -->
               <th>Modify</th>
             </tr>
             <tr v-for="p in products" :key="p.id">
               <td>{{ p.name }}</td>
               <td>{{ p.price }}</td>
-              <td>{{ p.description }}</td>
+              <!-- <td>{{ p.description }}</td> -->
               <td>
                 <button
                   class="btn btn-sm btn-primary"
@@ -85,15 +85,7 @@
                     />
                   </div>
                   <div class="form-group">
-                    <textarea
-                      name="description"
-                      v-model="product.description"
-                      id="description"
-                      placeholder="Description"
-                      class="form-control"
-                      cols="30"
-                      rows="10"
-                    ></textarea>
+                    <vue-editor v-model="product.description" />
                   </div>
                   <div class="form-group">
                     <input
@@ -107,16 +99,37 @@
                     <input
                       type="text"
                       placeholder="Tags"
-                      v-model="product.tags"
+                      v-model="currentTag"
                       class="form-control"
+                      @keyup.188="addTag()"
                     />
+                    <div v-if="product.tags">
+                      <span v-for="tag in product.tags" :key="tag">
+                        {{ tag }}
+                      </span>
+                    </div>
                   </div>
                   <div class="form-group">
                     <input
                       type="file"
                       class="form-control"
-                      @change="uploadImage()"
+                      @change="uploadImage"
                     />
+                    <div
+                      class="d-flex align-items-start py-2"
+                      v-if="product.images"
+                    >
+                      <div
+                        v-for="(img, idx) in product.images"
+                        :key="img"
+                        class="img-wrapper"
+                      >
+                        <img :src="img" class="mr-3" width="80px" />
+                        <span class="delete" @click="deleteImage(img, idx)">
+                          X
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -155,10 +168,12 @@
 </template>
 
 <script>
-import { db } from '../firebase'
+import { fb, db } from '../firebase'
+import { VueEditor } from 'vue2-editor'
 
 export default {
   name: 'Products',
+  components: { VueEditor },
   data() {
     return {
       products: [],
@@ -166,11 +181,12 @@ export default {
         name: null,
         price: null,
         description: null,
-        tags: null,
-        images: null
+        tags: [],
+        images: []
       },
       showModal: false,
-      mode: null
+      mode: null,
+      currentTag: null
     }
   },
 
@@ -183,10 +199,20 @@ export default {
   },
 
   methods: {
+    reset() {
+      this.product = {
+        name: null,
+        price: null,
+        description: null,
+        tags: [],
+        images: []
+      }
+    },
+
     openAddModal() {
       this.mode = 'add'
+      this.reset()
       this.showModal = true
-      this.product = {}
     },
 
     addProduct() {
@@ -209,9 +235,68 @@ export default {
       this.showModal = false
     },
 
-    uploadImage() {}
+    addTag() {
+      this.product.tags.findIndex(x => x == this.currentTag) < 0
+        ? this.product.tags.push(this.currentTag) // TODO if array is null, create an empty array
+        : console.log('This key already exists!')
+      this.currentTag = ''
+    },
+
+    uploadImage(e) {
+      let file = e.target.files[0]
+      // TODO add timestamp to the file name
+      let storageRef = fb.storage().ref('products/' + file.name)
+      let uploadTask = storageRef.put(file)
+
+      // Register three observers:
+      // 1. 'state_changed' observer, called any time the state changes
+      // 2. Error observer, called on failure
+      // 3. Completion observer, called on successful completion
+      uploadTask.on(
+        'state_changed',
+        () => {},
+        () => {},
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            console.log('File available at', downloadURL)
+            this.product.images.push(downloadURL) // TODO if array is null, create an empty array
+          })
+        }
+      )
+    },
+
+    deleteImage(img, idx) {
+      let storageRef = fb.storage().refFromURL(img)
+
+      this.product.images.splice(idx, 1)
+
+      // Delete the file
+      storageRef
+        .delete()
+        .then(() => {
+          // File deleted successfully
+          console.log('Image was deleted')
+        })
+        .catch(() => {
+          // Uh-oh, an error occurred!
+        })
+    }
   }
 }
 </script>
 
-<style></style>
+<style>
+.img-wrapper {
+  position: relative;
+}
+.delete {
+  position: absolute;
+  padding: 1rem;
+  left: -10px;
+}
+.delete:hover {
+  cursor: pointer;
+}
+</style>

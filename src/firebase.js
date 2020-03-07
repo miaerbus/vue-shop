@@ -1,5 +1,7 @@
 import firebase from 'firebase'
-require('firebase/firestore')
+import 'firebase/firestore'
+import 'firebase/firebase-auth'
+import 'firebase/storage'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCUHxi_2U93ybDtOR4iF5YxtJQbSGrscSU',

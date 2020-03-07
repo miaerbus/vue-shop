@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { fb } from '../firebase'
+import { db, fb } from '../firebase'
 
 export default {
   name: 'Login',
@@ -138,11 +138,24 @@ export default {
       password: null
     }
   },
+
   methods: {
     signup() {
       fb.auth()
         .createUserWithEmailAndPassword(this.email, this.password)
-        .then(() => {
+        .then(user => {
+          // Add a new document in collection "cities"
+          db.collection('users')
+            .doc(user.user.uid)
+            .set({
+              name: this.name
+            })
+            .then(() => {
+              console.log('Document successfully written!')
+            })
+            .catch(error => {
+              console.error('Error writing document: ', error)
+            })
           this.$router.replace('admin')
         })
         .catch(error => {

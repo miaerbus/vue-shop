@@ -21,10 +21,10 @@
             </div>
             <div class="user-info">
               <span class="user-name">
-                Joan
-                <strong>Smith</strong>
+                John
+                <strong>Doe</strong>
               </span>
-              <span class="user-role">Administrator</span>
+              <span class="user-email">{{ email }}</span>
               <span class="user-status">
                 <i class="fa fa-circle"></i>
                 <span>Online</span>
@@ -73,6 +73,12 @@
                 </router-link>
               </li>
               <li class="sidebar-dropdown">
+                <router-link to="/admin/profile">
+                  <i class="fa fa-user"></i>
+                  <span class="menu-text">Profile</span>
+                </router-link>
+              </li>
+              <li class="sidebar-dropdown">
                 <a href="#" @click="signout()">
                   <i class="fa fa-sign-out-alt"></i>
                   <span class="menu-text">Logout</span>
@@ -98,6 +104,26 @@ import { fb } from '../firebase'
 
 export default {
   name: 'Admin',
+  data() {
+    return {
+      name: null,
+      email: null
+    }
+  },
+
+  created() {
+    fb.auth().onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in.
+        this.email = user.email
+        console.log(user)
+      } else {
+        // No user is signed in.
+        console.log('No user is signed in.')
+      }
+    })
+  },
+
   methods: {
     signout() {
       fb.auth()
