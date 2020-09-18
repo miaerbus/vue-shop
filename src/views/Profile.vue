@@ -130,7 +130,7 @@ export default {
         .sendPasswordResetEmail(auth.currentUser.email)
         .then(() => {
           // Email sent.
-          console.log('Email sent!')
+          // log('Email sent!')
         })
         .catch(() => {
           // An error happened.
